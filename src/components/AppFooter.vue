@@ -66,7 +66,7 @@ onMounted(() => {
       >
       <span>|</span>
       <a
-        href="https://github.com/lyqht/mini-qr"
+        href="https://github.com/VesselWave/mini-qr"
         target="_blank"
         class="inline-flex items-center text-zinc-900 hover:text-zinc-700 dark:text-zinc-100 dark:hover:text-zinc-300"
         :aria-label="t('GitHub repository for this project')"

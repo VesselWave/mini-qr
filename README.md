@@ -4,6 +4,9 @@
 
 An app to create beautiful QR codes and scan various QR code types.
 
+> **This is [VesselWave's fork](https://github.com/VesselWave/mini-qr) of [lyqht/mini-qr](https://github.com/lyqht/mini-qr), live at [qr.vwave.me](https://qr.vwave.me).**
+> It adds an Alphanumeric mode toggle, which encodes data using QR's compact Alphanumeric/Numeric modes (uppercasing text when needed) for smaller, easier-to-scan codes.
+
 <div style="display:flex; flex-direction:row; flex-wrap:wrap; justify-content:center; gap:8px;">
     <a href="https://esteetey.dev"><img width="100" src="public/presets/lyqht.svg" /></a>
     <a href="https://www.padlet.com"><img width="100" src="public/presets/padlet.svg" /></a>
@@ -36,13 +39,14 @@ An app to create beautiful QR codes and scan various QR code types.
 - 📦 Batch data export: Import a CSV file with multiple data strings and export QR codes for them all at once. Template CSV files can be found in [`public/batch_export_templates/`](public/batch_export_templates/).
 - 📲 PWA Support: Install MiniQR as a desktop or mobile app
 - 📝 Data templates: Support for various data types including text, URLs, emails, phone numbers, SMS, WiFi credentials, vCards, locations, calendar events, and EPC QR (SEPA payment / GiroCode)
+- 🔠 Alphanumeric mode: compact encoding for 0–9, A–Z, space and `$ % * + - . / :` (fork feature)
 - 🌍 UTF-8 input support: Vietnamese, CJK, Arabic, emoji, and other multibyte text
 
 See [ROADMAP.md](./ROADMAP.md) for future planned features.
 
 ## Demo
 
-Try it out [here](https://mini-qr-code-generator.vercel.app/) ✨
+Try it out at [qr.vwave.me](https://qr.vwave.me) ✨ (the upstream original is at [mini-qr-code-generator.vercel.app](https://mini-qr-code-generator.vercel.app/))
 
 Browse the component library (the internal QR-code rendering lib) in Storybook at [mini-qr-storybook.vercel.app](https://mini-qr-storybook.vercel.app) 📚
 
@@ -96,7 +100,7 @@ For full self-hosting instructions including Docker setup, environment variables
 
 ## Contributing
 
-[![All Contributors](https://img.shields.io/github/all-contributors/lyqht/mini-qr?color=ee8449&style=flat-square)](#contributors) [![Crowdin](https://badges.crowdin.net/miniqr/localized.svg)](https://crowdin.com/project/miniqr)
+[![All Contributors](https://img.shields.io/github/all-contributors/VesselWave/mini-qr?color=ee8449&style=flat-square)](#contributors) [![Crowdin](https://badges.crowdin.net/miniqr/localized.svg)](https://crowdin.com/project/miniqr)
 
 Translations & bug fixes are welcome!
 For all other matters, before opening an issue or contacting the project maintainer, please read up on to [CONTRIBUTING.md](CONTRIBUTING.md).
