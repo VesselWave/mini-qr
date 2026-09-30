@@ -2,6 +2,14 @@ export { createQRCode } from './core'
 export { renderQrFragment, wrapAsSvg } from './render/svg'
 export { renderFramed } from './frame'
 export { buildMatrix } from './matrix'
+export {
+  ALPHANUMERIC_CHARSET,
+  findNonAlphanumericChars,
+  isAlphanumericData,
+  isNumericData,
+  payloadBits,
+  resolveEncodingMode
+} from './encoding'
 export { rasterizeSvg } from './render/canvas'
 export { fromLegacyOptions } from './legacy-adapter'
 export { buildSvgExportString } from './svg-export'
@@ -18,6 +26,7 @@ export type {
   DotShape,
   DotsConfig,
   ECLevel,
+  EncodingMode,
   FrameConfig,
   ImageConfig,
   QRCodeConfig,

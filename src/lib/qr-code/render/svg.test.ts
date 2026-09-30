@@ -9,6 +9,7 @@ function baseConfig(overrides: Partial<ResolvedQRCodeConfig> = {}): ResolvedQRCo
     size: 200,
     margin: 0,
     errorCorrectionLevel: 'Q',
+    mode: DEFAULT_CONFIG.mode,
     dots: { ...DEFAULT_CONFIG.dots },
     cornerSquares: { ...DEFAULT_CONFIG.cornerSquares },
     cornerDots: { ...DEFAULT_CONFIG.cornerDots },

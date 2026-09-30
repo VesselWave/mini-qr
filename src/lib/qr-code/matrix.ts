@@ -1,4 +1,5 @@
 import qrcode from 'qrcode-generator'
+import { resolveEncodingMode, type EncodingMode } from './encoding'
 import type { ECLevel } from './types'
 import { utf8StringToBytes } from './utf8'
 
@@ -22,22 +23,31 @@ function ensureUtf8Override(): void {
 export interface QRMatrix {
   matrix: boolean[][]
   count: number
+  /** Mode the data was actually encoded in (after any Byte fallback). */
+  mode: EncodingMode
+  /** QR version 1–40 (count = 17 + 4 × version). */
+  version: number
 }
 
-export function buildMatrix(data: string, ecLevel: ECLevel): QRMatrix {
+/**
+ * @param mode preferred data mode — see resolveEncodingMode for the fallback
+ *   rules. Defaults to Byte, the historical behaviour.
+ */
+export function buildMatrix(data: string, ecLevel: ECLevel, mode?: EncodingMode): QRMatrix {
   if (!data) {
     throw new Error('QR code data must be a non-empty string')
   }
   ensureUtf8Override()
+  const resolvedMode = resolveEncodingMode(data, mode)
   const qr = qrcode(0, ecLevel)
   try {
-    qr.addData(data, 'Byte')
+    qr.addData(data, resolvedMode)
     qr.make()
   } catch (err) {
     throw new Error(
       `Failed to build QR matrix for input of byte-length ${
         utf8StringToBytes(data).length
-      } at EC level ${ecLevel}: ${(err as Error).message}`
+      } at EC level ${ecLevel} in ${resolvedMode} mode: ${(err as Error).message}`
     )
   }
   const count = qr.getModuleCount()
@@ -47,5 +57,5 @@ export function buildMatrix(data: string, ecLevel: ECLevel): QRMatrix {
     for (let c = 0; c < count; c++) row.push(qr.isDark(r, c))
     matrix.push(row)
   }
-  return { matrix, count }
+  return { matrix, count, mode: resolvedMode, version: (count - 17) / 4 }
 }

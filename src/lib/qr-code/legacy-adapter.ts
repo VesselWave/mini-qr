@@ -1,5 +1,12 @@
 import type { CornerDotType, CornerSquareType, DotType, Options } from './legacy-types'
-import type { CornerDotShape, CornerSquareShape, DotShape, ECLevel, QRCodeConfig } from './types'
+import type {
+  CornerDotShape,
+  CornerSquareShape,
+  DotShape,
+  ECLevel,
+  EncodingMode,
+  QRCodeConfig
+} from './types'
 
 const DOT_SHAPE_FALLBACK: DotShape = 'square'
 const CORNER_SQUARE_FALLBACK: CornerSquareShape = 'extra-rounded'
@@ -66,12 +73,17 @@ export function fromLegacyOptions(legacy: Options): QRCodeConfig {
   }
 
   const ec = legacy.qrOptions?.errorCorrectionLevel as ECLevel | undefined
+  // Kanji isn't implemented; its data goes through the UTF-8 Byte path.
+  const legacyMode = legacy.qrOptions?.mode
+  const mode: EncodingMode | undefined =
+    legacyMode === 'Kanji' || legacyMode === undefined ? undefined : legacyMode
 
   return {
     data: legacy.data ?? '',
     size,
     margin: legacy.margin,
     errorCorrectionLevel: ec,
+    mode,
     dots: legacy.dotsOptions
       ? {
           shape: clampDotShape(legacy.dotsOptions.type),

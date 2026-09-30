@@ -85,9 +85,13 @@ import {
   type CornerDotType,
   type CornerSquareType,
   type DotType,
+  type EncodingMode,
   type ErrorCorrectionLevel,
   type Options as StyledQRCodeProps
 } from '@/lib/qr-code'
+import { resolveEffectiveErrorCorrectionLevel } from '@/lib/qr-code/render/image'
+import CompactEncodingToggle from '@/components/CompactEncodingToggle.vue'
+import type { CompactEncodingPreference } from '@/utils/compactEncoding'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import 'vue-i18n'
 import { useI18n } from 'vue-i18n'
@@ -320,7 +324,8 @@ const isImageSizeOutOfRange = computed(() => {
   return typeof v === 'number' && (v < 0 || v > MAX_SAFE_IMAGE_SIZE)
 })
 const qrOptions = computed(() => ({
-  errorCorrectionLevel: errorCorrectionLevel.value
+  errorCorrectionLevel: errorCorrectionLevel.value,
+  mode: encodingMode.value
 }))
 
 const qrCodeProps = computed<StyledQRCodeProps>(() => ({
@@ -391,7 +396,10 @@ const allPresetOptions = computed(() => {
   return options.map((preset) => ({ value: preset.name, label: t(preset.name) }))
 })
 const selectedPreset = ref<
-  Preset & { key?: string; qrOptions?: { errorCorrectionLevel: ErrorCorrectionLevel } }
+  Preset & {
+    key?: string
+    qrOptions?: { errorCorrectionLevel: ErrorCorrectionLevel; mode?: EncodingMode }
+  }
 >(defaultPreset)
 
 const selectedPresetKey = ref<string>(
@@ -449,10 +457,23 @@ const recommendedErrorCorrectionLevel = computed<ErrorCorrectionLevel | null>(()
 // (see mini-qr#309), so the render pipeline boosts them to 'Q' whenever an
 // image is set. Surface that here so the UI doesn't silently disagree with
 // what actually gets encoded.
+const effectiveErrorCorrectionLevel = computed(() =>
+  resolveEffectiveErrorCorrectionLevel(Boolean(image.value), errorCorrectionLevel.value)
+)
 const isErrorCorrectionBoostedForLogo = computed(
   () =>
     Boolean(image.value) &&
     (errorCorrectionLevel.value === 'L' || errorCorrectionLevel.value === 'M')
+)
+//#endregion
+
+//#region /* Compact (alphanumeric) encoding */
+// 'auto' encodes compactly whenever the data fits the alphanumeric charset —
+// the renderer falls back to Byte per string, so batch rows that don't fit
+// still render. 'off' is the user's explicit opt-out.
+const compactEncodingPreference = ref<CompactEncodingPreference>('auto')
+const encodingMode = computed<EncodingMode>(() =>
+  compactEncodingPreference.value === 'auto' ? 'Alphanumeric' : 'Byte'
 )
 //#endregion
 
@@ -593,6 +614,12 @@ function applySelectedPresetToState() {
   errorCorrectionLevel.value = preset.qrOptions?.errorCorrectionLevel
     ? preset.qrOptions.errorCorrectionLevel
     : 'Q'
+  // Style presets carry no mode, so they leave the user's choice alone; saved
+  // configs do, and an explicit Byte there means the user switched it off.
+  const presetMode = preset.qrOptions?.mode
+  if (presetMode) {
+    compactEncodingPreference.value = presetMode === 'Byte' ? 'off' : 'auto'
+  }
   const frame = (preset as Preset & { frame?: QRCodeFrameConfig }).frame
   if (frame) {
     applyFrameFromPreset(frame)
@@ -1086,7 +1113,7 @@ const isMobileExportDrawerOpen = ref(false)
 const asciiMatrix = computed<boolean[][]>(() => {
   if (!data.value) return []
   try {
-    return buildMatrix(data.value, errorCorrectionLevel.value).matrix
+    return buildMatrix(data.value, errorCorrectionLevel.value, encodingMode.value).matrix
   } catch (err) {
     console.error('Failed to build matrix for ASCII export:', err)
     return []
@@ -2263,31 +2290,40 @@ const updateDataFromModal = (newData: string) => {
                         class="me-2 grow text-input"
                         :placeholder="t('data to encode e.g. a URL or a string')"
                       ></textarea>
-                      <button
-                        @click="openDataModal"
-                        aria-haspopup="dialog"
-                        :aria-expanded="isDataModalVisible"
-                        class="secondary-button mt-2 flex items-center gap-1 self-end"
-                        :aria-label="t('Open data type generator')"
+                      <div
+                        class="ms-1 mt-3 flex w-full flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
                       >
-                        <span>{{ t('Data templates') }}</span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
+                        <CompactEncodingToggle
+                          v-model="data"
+                          v-model:preference="compactEncodingPreference"
+                          :ec-level="effectiveErrorCorrectionLevel"
+                        />
+                        <button
+                          @click="openDataModal"
+                          aria-haspopup="dialog"
+                          :aria-expanded="isDataModalVisible"
+                          class="secondary-button flex shrink-0 items-center gap-1 self-end sm:self-start"
+                          :aria-label="t('Open data type generator')"
                         >
-                          <!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE -->
-                          <path
-                            fill="none"
-                            stroke="#888888"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="m7 7l5 5l-5 5m6-10l5 5l-5 5"
-                          />
-                        </svg>
-                      </button>
+                          <span>{{ t('Data templates') }}</span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                          >
+                            <!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE -->
+                            <path
+                              fill="none"
+                              stroke="#888888"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="m7 7l5 5l-5 5m6-10l5 5l-5 5"
+                            />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                     <template v-if="exportMode === ExportMode.Batch">
                       <template v-if="!inputFileForBatchEncoding">
@@ -2799,6 +2835,7 @@ const updateDataFromModal = (newData: string) => {
     :is-batch="exportMode === ExportMode.Batch"
     :batch-rows="asciiBatchRows"
     :ec-level="errorCorrectionLevel"
+    :mode="encodingMode"
     @close="isTextExportModalOpen = false"
   />
 
