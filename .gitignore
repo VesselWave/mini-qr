@@ -48,3 +48,4 @@ docs/superpowers/
 
 # Vitest browser-mode failure screenshots
 __screenshots__/
+.wrangler
