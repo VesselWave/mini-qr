@@ -9,11 +9,13 @@ This document covers all the ways to self-host MiniQR.
 Pull the prebuilt image from GitHub Container Registry and start the app:
 
 ```bash
-wget https://github.com/lyqht/mini-qr/raw/main/docker-compose.yml
+wget https://github.com/VesselWave/mini-qr/raw/main/docker-compose.yml
 docker compose up -d
 ```
 
 The app will be available at [http://localhost](http://localhost) (port 80, proxied by Nginx).
+
+> **Note:** The prebuilt image (`ghcr.io/lyqht/mini-qr`) is built from upstream and does not include this fork's changes such as compact alphanumeric encoding. Use [Build Locally](#build-locally) to run the fork.
 
 > **Note:** The `docker-compose.yml` embeds its own Nginx config — you only need this one file for the Quick Start. No other files are required.
 
@@ -37,7 +39,7 @@ docker run -d -p 80:8080 mini-qr
 Compile the application directly using NPM and Vite:
 
 ```bash
-git clone https://github.com/lyqht/mini-qr.git
+git clone https://github.com/VesselWave/mini-qr.git
 cd mini-qr
 npm install
 npm run build

@@ -1,5 +1,7 @@
 # Contributing to Mini QR
 
+> This repository is [VesselWave's fork](https://github.com/VesselWave/mini-qr) of [lyqht/mini-qr](https://github.com/lyqht/mini-qr). The guidelines below are upstream's; contributions to the core app are best sent to upstream.
+
 Thank you for your interest in contributing to the Mini QR project! Contributions from the community are welcome to help improve and enhance this tool.
 
 You can work on existing issues or suggest new ones. You can also share your presets with the world by referring to [this section](#adding-new-presets).
