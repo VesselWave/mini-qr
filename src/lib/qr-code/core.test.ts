@@ -8,6 +8,7 @@ function makeCurrent(overrides: Partial<ResolvedQRCodeConfig> = {}): ResolvedQRC
     size: DEFAULT_CONFIG.size,
     margin: DEFAULT_CONFIG.margin,
     errorCorrectionLevel: DEFAULT_CONFIG.errorCorrectionLevel,
+    mode: DEFAULT_CONFIG.mode,
     dots: { ...DEFAULT_CONFIG.dots },
     cornerSquares: { ...DEFAULT_CONFIG.cornerSquares },
     cornerDots: { ...DEFAULT_CONFIG.cornerDots },

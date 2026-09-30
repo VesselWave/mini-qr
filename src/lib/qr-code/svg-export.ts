@@ -11,6 +11,7 @@ function resolve(config: QRCodeConfig): ResolvedQRCodeConfig {
     size: config.size ?? DEFAULT_CONFIG.size,
     margin: config.margin ?? DEFAULT_CONFIG.margin,
     errorCorrectionLevel: config.errorCorrectionLevel ?? DEFAULT_CONFIG.errorCorrectionLevel,
+    mode: config.mode ?? DEFAULT_CONFIG.mode,
     dots: { ...DEFAULT_CONFIG.dots, ...config.dots },
     cornerSquares: { ...DEFAULT_CONFIG.cornerSquares, ...config.cornerSquares },
     cornerDots: { ...DEFAULT_CONFIG.cornerDots, ...config.cornerDots },

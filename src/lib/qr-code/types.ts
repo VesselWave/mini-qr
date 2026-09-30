@@ -2,6 +2,8 @@ export type DotShape = 'square' | 'rounded' | 'extra-rounded' | 'classy' | 'clas
 export type CornerSquareShape = 'square' | 'rounded' | 'extra-rounded' | 'dot'
 export type CornerDotShape = 'square' | 'rounded' | 'dot'
 export type ECLevel = 'L' | 'M' | 'Q' | 'H'
+export type { EncodingMode } from './encoding'
+import type { EncodingMode } from './encoding'
 export type TextPosition = 'top' | 'bottom' | 'left' | 'right'
 
 export interface DotsConfig {
@@ -60,6 +62,12 @@ export interface QRCodeConfig {
   size?: number
   margin?: number
   errorCorrectionLevel?: ECLevel
+  /**
+   * Preferred data mode. 'Alphanumeric' encodes 0–9 A–Z space $%*+-./: at
+   * 5.5 bits/char instead of Byte's 8, falling back to Byte when the data
+   * doesn't fit the charset. Defaults to 'Byte'.
+   */
+  mode?: EncodingMode
   dots?: DotsConfig
   cornerSquares?: CornerSquaresConfig
   cornerDots?: CornerDotsConfig
@@ -90,6 +98,7 @@ export interface ResolvedQRCodeConfig {
   size: number
   margin: number
   errorCorrectionLevel: ECLevel
+  mode: EncodingMode
   dots: Required<DotsConfig>
   cornerSquares: Required<CornerSquaresConfig>
   cornerDots: Required<CornerDotsConfig>
@@ -109,6 +118,7 @@ export const DEFAULT_CONFIG: Omit<ResolvedQRCodeConfig, 'data'> = {
   // logo'd/stylised 200px preset with long data) fail to scan.
   margin: 4,
   errorCorrectionLevel: 'Q',
+  mode: 'Byte',
   dots: { shape: 'square', color: '#000000' },
   cornerSquares: { shape: 'square', color: '#000000' },
   cornerDots: { shape: 'square', color: '#000000' },

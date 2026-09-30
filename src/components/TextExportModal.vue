@@ -11,7 +11,7 @@ import {
   getMarkdownText,
   type TextExportInput
 } from '@/utils/convertToText'
-import type { AsciiFormat } from '@/lib/qr-code'
+import type { AsciiFormat, EncodingMode } from '@/lib/qr-code'
 
 interface BatchRow {
   data: string
@@ -27,8 +27,9 @@ const props = withDefaults(
     isBatch?: boolean
     batchRows?: BatchRow[]
     ecLevel?: 'L' | 'M' | 'Q' | 'H'
+    mode?: EncodingMode
   }>(),
-  { isBatch: false, batchRows: () => [], ecLevel: 'Q' }
+  { isBatch: false, batchRows: () => [], ecLevel: 'Q', mode: 'Byte' }
 )
 
 defineEmits<{ (e: 'close'): void }>()
@@ -73,7 +74,7 @@ function preview(format: AsciiFormat): string {
 function batchPreview(format: AsciiFormat): string {
   if (props.isBatch && props.batchRows && props.batchRows.length > 0) {
     try {
-      const m = buildMatrix(props.batchRows[0].data, props.ecLevel).matrix
+      const m = buildMatrix(props.batchRows[0].data, props.ecLevel, props.mode).matrix
       return getAsciiText({ matrix: m, format })
     } catch {
       return ''
@@ -98,7 +99,7 @@ async function downloadBatchZip(format: AsciiFormat, wrap: 'md' | 'txt') {
       const row = props.batchRows[i]
       let matrix: boolean[][]
       try {
-        matrix = buildMatrix(row.data, props.ecLevel).matrix
+        matrix = buildMatrix(row.data, props.ecLevel, props.mode).matrix
       } catch (err) {
         console.error(`Skipping row ${i}: failed to build matrix`, err)
         continue
