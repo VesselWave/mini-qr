@@ -98,6 +98,8 @@ https://github.com/lyqht/mini-qr/assets/35736525/991b2d7e-f168-4354-9091-1678d2c
 
 For full self-hosting instructions including Docker setup, environment variables, custom presets, and deployment scenarios, see [SELF_HOSTING.md](SELF_HOSTING.md).
 
+For this fork's Cloudflare deployment and automatic builds on push, see [docs/cloudflare-deployment.md](docs/cloudflare-deployment.md).
+
 ## Contributing
 
 [![All Contributors](https://img.shields.io/github/all-contributors/VesselWave/mini-qr?color=ee8449&style=flat-square)](#contributors) [![Crowdin](https://badges.crowdin.net/miniqr/localized.svg)](https://crowdin.com/project/miniqr)
