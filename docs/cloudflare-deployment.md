@@ -15,6 +15,7 @@ In the Worker's **Settings > Builds**, use these settings:
 - Root directory: repository root
 - Build command: `bun install --frozen-lockfile --ignore-scripts && BASE_PATH=/ bun run build`
 - Deploy command: `bunx wrangler@4.142.0 deploy`
+- Preview command: `bunx wrangler@4.142.0 preview`
 - Build variable `BUN_VERSION`: `1.4.2`
 - Build variable `SKIP_DEPENDENCY_INSTALL`: `true`
 
